@@ -1,35 +1,57 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import Section from './components/Section/Section';
+import FeedbackOptions from './components/FeedbackOptions/FeedbackOptions';
+import Statistics from './components/Statistics/Statistics';
+import Notification from './components/Notification/Notification';
 
-function App() {
-  const [count, setCount] = useState(0)
+export const App = () => {
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+ const incrementGood = () => {
+    setGood(prev => prev +1);
+  };
+
+ const incrementNeutral = () => {
+    setNeutral(prev => prev +1);
+  };
+
+ const incrementBad = () => {
+    setBad(prev => prev +1);
+  };
+
+ const countTotalFeedback = () => {
+    let totalReviews = good + neutral + bad;
+    return totalReviews;
+  };
+
+ const countPositiveFeedbackPercentage = () => {
+    let percentagePositiveReviews =
+      (good / countTotalFeedback()) * 100;
+    return Math.round(percentagePositiveReviews);
+  };
+
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', }}>
+        <Section title={'Please leave feedback'}>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <FeedbackOptions options={incrementGood} onLeaveFeedback={'Good'} />
+            <FeedbackOptions options={incrementNeutral} onLeaveFeedback={'Neutral'} />
+            <FeedbackOptions options={incrementBad} onLeaveFeedback={'Bad'} />
+          </div>
+          
+        {countTotalFeedback() > 0 &&  <Statistics
+            good={good}
+            neutral={neutral}
+            bad={bad}
+            total={countTotalFeedback()}
+            positivePercentage={countPositiveFeedbackPercentage()}
+          />}
+          {countTotalFeedback() === 0 && (<Notification message='There is no feedback'/>)}
+        </Section>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    );
+  }
 
-export default App
+export default App;
